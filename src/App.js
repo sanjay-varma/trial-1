@@ -1,4 +1,5 @@
 import React from "react";
+import Comp1 from "./comp-1";
 
 export default class App extends React.Component {
 
@@ -7,9 +8,13 @@ export default class App extends React.Component {
 
     this.inp1 = React.createRef();
     this.inp2 = React.createRef();
-    this.state = { bg: "red", x: 0, y: 0, msg: "Hello World!" }
-    setInterval(this.onTimerX, 500)
-    setInterval(this.onTimerY, 700)
+    this.hideButton = React.createRef();
+    this.state = { bg: this.props.color, x: 0, y: 0, msg: "Hello World!", show: true }
+  }
+
+  componentDidMount() {
+    setInterval(this.onTimerX, 500);
+    setInterval(this.onTimerY, 700);
   }
 
   onTimerX = () => {
@@ -22,19 +27,33 @@ export default class App extends React.Component {
 
   inputChanged = (e) => {
     this.setState({ bg: e.target.value, msg: this.inp1.current.value })
+    if (this.Comp1)
+      this.Comp1.color = e.target.value;
   }
 
   buttonClicked = () => {
     this.setState({ bg: this.inp2.current.value, x: 0, y: 0 })
   }
 
+  hideClicked = () => {
+    this.hideButton.current.innerText = (!this.state.show ? "Hide" : "Show")
+    this.setState({ show: !this.state.show })
+  }
+
   render() {
     return (
-      <div style={{ backgroundColor: this.state.bg, height: 100, widht: 100 }}>
-        <strong>{this.state.msg} - {this.state.x} - {this.state.y}</strong><br />
-        <input ref={this.inp1} onChange={this.inputChanged} /><br />
-        <input ref={this.inp2} />
-        <button onClick={this.buttonClicked} > Change </button>
+      <div style={{ width: "100%", display: "flex" }}>
+        <div style={{ backgroundColor: this.state.bg, height: 100, width: "60%" }}>
+          <strong>{this.state.msg} - {this.state.x} - {this.state.y}</strong><br />
+          <input ref={this.inp1} onChange={this.inputChanged} /><br />
+          <input ref={this.inp2} />
+          <button onClick={this.buttonClicked} > Change </button><br />
+          <button ref={this.hideButton} onClick={this.hideClicked}>Hide</button>
+        </div>
+        <div style={{ width: "40%" }}>
+          {this.state.show &&
+            <Comp1 compColor={this.state.bg} />}
+        </div>
       </div>
     )
   }
