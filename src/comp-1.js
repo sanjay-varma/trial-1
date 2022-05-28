@@ -7,6 +7,15 @@ export default class Comp1 extends React.Component {
         this.state = { bg: props.compColor }
     }
 
+    componentDidMount() {
+        this.startTime = Date.now();
+    }
+
+    componentWillUnmount() {
+        var endTime = Date.now();
+        this.props.onUnmount((endTime - this.startTime) / 1000)
+    }
+
     clickHandler = () => {
         this.setState({ bg: this.col.current.value });
     }
