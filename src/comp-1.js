@@ -5,14 +5,17 @@ export default class Comp1 extends React.Component {
         super(props);
         this.col = React.createRef();
         this.state = { bg: props.compColor }
+        console.log("constructor " + this.state.bg)
     }
 
     componentDidMount() {
+        console.log("componentDidMount " + this.state.bg)
         this.startTime = Date.now();
     }
 
     componentWillUnmount() {
         var endTime = Date.now();
+        console.log("componentWillUnmount " + this.state.bg)
         this.props.onUnmount((endTime - this.startTime) / 1000)
     }
 

@@ -19,7 +19,7 @@ export default class App extends React.Component {
   }
 
   comp1WillUnmount = (t) => {
-    this.lblShowTime.current.innerText = (t == 0 ? "" : "Component was shown for " + t + " seconds")
+    this.lblShowTime.current.innerText = (t === 0 ? "" : "Component was shown for " + t + " seconds")
   }
 
   onTimerX = () => {
@@ -46,6 +46,7 @@ export default class App extends React.Component {
   }
 
   render() {
+    //console.log("render " + this.state.bg);
     return (
       <div style={{ width: "100%", display: "flex" }}>
         <div style={{ backgroundColor: this.state.bg, height: 100, width: "60%" }}>
@@ -57,8 +58,10 @@ export default class App extends React.Component {
           <label ref={this.lblShowTime} > time here </label>
         </div>
         <div style={{ width: "40%" }}>
-          {this.state.show &&
-            <Comp1 compColor={this.state.bg} onUnmount={this.comp1WillUnmount} />}
+          {
+            this.state.show &&
+            <Comp1 compColor={this.state.bg} onUnmount={this.comp1WillUnmount} />
+          }
         </div>
       </div>
     )
