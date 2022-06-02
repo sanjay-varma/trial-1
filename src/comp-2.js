@@ -1,4 +1,5 @@
 import React from "react"
+import { Button, List, ListItem, Link, ListItemAvatar, ListItemText, IconButton, Icon, Avatar, Typography, Pagination } from "@mui/material";
 
 export default class Comp2 extends React.Component {
     constructor(props) {
@@ -22,13 +23,24 @@ export default class Comp2 extends React.Component {
     }
 
     showUsers = (user, index) => {
-        const usrRow = [];
-        Object.keys(user).forEach((key) => { usrRow.push(<>{user[key] + " "}</>) })
         return (
-            <div >
-                {usrRow}
-                <button onClick={() => this.delUser(index)}>X</button>
-            </div>
+            <ListItem
+                secondaryAction={
+                    <IconButton onClick={() => this.delUser(index)} edge="end" aria-label="delete">
+                        <Icon>delete_forrever</Icon>
+                    </IconButton>
+                }>
+                <ListItemAvatar>
+                    <Avatar src={user.avatar} />
+                </ListItemAvatar>
+                <ListItemText
+                    primary={user.first_name + " " + user.last_name}
+                    secondary={<Link href={"mailto:" + user.email} underline="hover">
+                        {user.email}
+                    </Link>}
+                />
+            </ListItem>
+
         )
     }
 
@@ -38,22 +50,27 @@ export default class Comp2 extends React.Component {
         this.setState({ users: u });
     }
 
+    handleChange = (event, value) => {
+        this.setState({ page: value }, () => { this.getUsers(); })
+    }
+
     render() {
 
         return (
             <div>
-                <button onClick={this.getUsers}>Refresh</button> Page: {this.state.page}
-                {this.state.users.map(this.showUsers)}
+
+                <Typography>Page: {this.state.page}</Typography>
+
+                <List sx={{ width: "60%" }}>
+                    {this.state.users.map(this.showUsers)}
+                </List>
                 {this.state.users.length < 1 &&
-                    <div>This page is empty ...</div>
+                    <Typography>This page is empty ...</Typography>
                 }
-                <button onClick={() => {
-                    this.setState({ page: this.state.page + 1 }, () => { this.getUsers(); });
-                }}>Next</button>
-                <button onClick={() => {
-                    if (this.state.page >= 2)
-                        this.setState({ page: this.state.page - 1 }, () => { this.getUsers(); });
-                }}>Previous</button>
+
+                <Pagination count={2} page={this.state.page} onChange={this.handleChange} />
+                <Button onClick={this.getUsers}>Refresh</Button>
+
             </div >
         )
     }

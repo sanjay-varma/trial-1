@@ -1,12 +1,16 @@
 import React from "react"
+import { Button, TextField, Stack, Alert } from "@mui/material";
 
 export default class Comp3 extends React.Component {
     constructor(props) {
         super(props);
 
-        this.email = React.createRef();
-        this.password = React.createRef();
-        this.message = React.createRef();
+        this.state = {
+            email: "",
+            password: "",
+            success: false,
+            message: "Not logged in"
+        }
     }
 
     doLogin = () => {
@@ -17,26 +21,47 @@ export default class Comp3 extends React.Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: this.email.current.value.trim(),
-                password: this.password.current.value.trim()
+                email: this.state.email.trim(),
+                password: this.state.password.trim()
             })
         })
             .then((res) => res.json())
             .then((resJSON) => {
                 //console.log(resJSON);
-                if (resJSON.error) { this.message.current.innerText = resJSON.error }
-                if (resJSON.token) { this.message.current.innerText = "Login success - " + resJSON.token }
+                if (resJSON.error) { this.setState({ success: false, message: resJSON.error }) }
+                if (resJSON.token) { this.setState({ success: true, message: "Logged in with token " + resJSON.token }) }
             })
     }
 
     render() {
         return (
-            <div>
-                email: <input ref={this.email} /><br />
-                password: <input type="password" ref={this.password} /><br />
-                <button onClick={this.doLogin}>Login</button><br />
-                <label ref={this.message} />
-            </div>
+            <Stack sx={{ width: "100%" }}>
+                <TextField
+                    required
+                    id="outlined-required"
+                    label="Email"
+                    defaultValue=""
+                    onChange={(e) => { this.setState({ email: e.target.value }) }}
+                />
+                <TextField
+                    id="outlined-password-input"
+                    label="Password"
+                    type="password"
+                    autoComplete="current-password"
+                    onChange={(e) => { this.setState({ password: e.target.value }) }}
+                />
+
+                <Button onClick={this.doLogin}>Login</Button>
+
+                {!this.state.success &&
+                    <Alert severity="error">{this.state.message}</Alert>
+                }
+
+                {this.state.success &&
+                    <Alert severity="success">{this.state.message}</Alert>
+                }
+
+            </Stack>
         )
     }
 }
